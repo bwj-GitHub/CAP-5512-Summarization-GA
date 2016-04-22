@@ -1,0 +1,7 @@
+.project
+.pydevproject
+*.pyc
+Input/*
+Output/*
+.DS_Store
+.DS_Sore?
