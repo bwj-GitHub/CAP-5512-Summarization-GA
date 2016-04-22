@@ -3,9 +3,6 @@ Created on Apr 10, 2016
 
 @author: brandon
 
-TODO: Finish unfinished methods (duh)
-TODO: DO NOT parameterize each token every-time summarize() is called!!
-TODO: remove x_size? In other words, fix the token representation.
 """
 
 
