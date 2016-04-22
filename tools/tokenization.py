@@ -248,13 +248,13 @@ class Tokenizer(object):
             
         # Add nums, prices, times, and product replacement regexes:
         punct_regex.extend(self._compile_replacement_regexes())
-        
+
         # Parse replacement files:
         for fn in replacement_files:
             res = False
             ps = False  # Punctuation Sensitive
             #with open(fn, "r", encoding="UTF8") as fp:
-            with open(fn, "r") as fp:
+            with open(fn, "r", encoding="UTF8") as fp:
                 for line in fp:
                     if line.strip() == "# -regex, -punct" or \
                             line.strip() == "# -punct, -regex":

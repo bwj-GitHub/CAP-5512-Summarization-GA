@@ -171,7 +171,7 @@ class Island(object):
             #     don't re-evaluate members that haven't changed.
 #             self.member[i]._reset_fitness()
 
-            if (self.member[i] == -1):
+            if (self.member[i].raw_fitness == -1):
                 self.problem.do_raw_fitness(self.member[i])
 
             self.sum_raw_fitness += self.member[i].raw_fitness

@@ -20,7 +20,7 @@ grid_w = 0
 grid_h = 0
 do_migrate = True
 
-PARAM_FILE = "../Input/Experiments/Experiment14/tldr14.params"
+PARAM_FILE = "../Input/tldr.params"
 
 def generate_neighbors(grid_h, grid_w):
     neighbors = []

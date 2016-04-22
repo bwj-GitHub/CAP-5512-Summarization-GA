@@ -14,9 +14,7 @@ import numpy as np
 import nltk
 from gensim.models.word2vec import Word2Vec
 from nltk.parse.stanford import StanfordDependencyParser
-from scipy.spatial.distance import cosine
 #from builtins import staticmethod
-from tools.tokenization import Tokenizer
 
 
 class SummaryChromo:
@@ -114,6 +112,8 @@ class SummaryChromo:
         for sent in sents:
             # Evaluate tokens of sentence with inner RNN:
             for i in range(len(sent)):
+                # NOTE: shape of sent[i] should be (x_size,1) NOT (x_size,);
+                #  the latter will cause issues...
                 y1 = self._token_step(sent[i])
             # NOTE: if rnn does its job, only last y1 is necessary
             
