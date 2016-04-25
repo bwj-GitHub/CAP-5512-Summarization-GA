@@ -61,6 +61,7 @@ class SummaryChromo:
                             self.Wxh2, self.Whh2, self.Why2,
                             self.bh2, self.by2]
         self._sparsify()
+        self._update_params(self._parameters)
     
     def _update_params(self, params_list):
         self.Wxh = params_list[0]
@@ -309,10 +310,17 @@ class SummaryChromo:
         for i in range(len(a._parameters)):
             a._parameters[i] = b._parameters[i].copy()
         a._update_params(a._parameters)
-        
         a.raw_fitness = b.raw_fitness
         a.scl_fitness = b.scl_fitness
         a.pro_fitness = b.pro_fitness
+        a.fit_dict = b.fit_dict
+        a.x_size = b.x_size  # TODO: remove?
+        a.y_size = b.y_size
+        a.h_size = b.h_size
+        a.x2_size = b.x2_size
+        a.y2_size = 1
+        a.h2_size = b.h2_size
+        a.sparsity=b.sparsity
 
 
 class SummaryTools:

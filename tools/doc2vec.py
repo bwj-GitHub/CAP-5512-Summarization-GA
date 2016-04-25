@@ -14,9 +14,10 @@ from tools.tokenization import Tokenizer, SentenceSegmenter
 from tools.file_tools import read_file_as_string, write_file
 
 
-def model_generic_dataset(filename, size=200):
+def model_generic_dataset(filename, size=30):
     doc_it = generic_labled_doc_iterator(filename)
-    return Doc2Vec(doc_it, size=size, window=8, min_count=5, workers=2)
+    return Doc2Vec(doc_it, size=size, negative=5,
+                   window=16, min_count=5, workers=2)
 
 
 def generic_labled_doc_iterator(filename, labeled=False):
@@ -45,11 +46,11 @@ def get_sims(model, target, docs, n=5):
         sims.append(model.docvecs.similarity(tvec, dvec, True))
 
 
-pp = True
-trained=True
+pp = False
+trained=False
 
 if __name__ == "__main__":
-    
+
     if not pp:
         # read and sentence segment megadoc:
         SS = SentenceSegmenter()
@@ -68,11 +69,23 @@ if __name__ == "__main__":
         print("Finished Training!")
 
     # Test similarity:
-    a = model.docvecs[733]
-    b = model.docvecs[734]
-    S=100
-    s = model.docvecs.similarity(a, b, True)
-    print(s)
+    a = "the prime minister fled the country this past thursday".split()
+    b = "the prime minister fled the country this past saturday".split()
+    c = "the prime minister fled the country this past wednesday".split()
+    d = "our prime minister fled the country this past thursday".split()
+    S=10
+    a_vec = model.infer_vector(a, S)
+    b_vec = model.infer_vector(b, S)
+    c_vec = model.infer_vector(c, S)
+    d_vec = model.infer_vector(d, S)
+    print("a: b, c, d")
+    sb = model.docvecs.similarity(a_vec, b_vec, True)
+    sc = model.docvecs.similarity(a_vec, c_vec, True)
+    sd = model.docvecs.similarity(a_vec, d_vec, True)
+    with open("quick_out.txt", "w") as fp:
+        fp.write(str(sb) + "\n")
+        fp.write(str(sc) + "\n")
+        fp.write(str(sd) + "\n")
 #     b = model.infer_vector(docs[0][0], steps=S)
 #     b_2 = model.infer_vector(docs[1][0], steps=S)  # b and b_2 should be closer than b and c
 #     c = model.infer_vector(docs[555][0], steps=S)

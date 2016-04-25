@@ -15,19 +15,20 @@ from ga.onemax import OneMax
 from ga.number_match import NumberMatch
 from ga.chromo import SummaryChromo, SummaryTools
 import ga.hwrite as hwrite
+from tools.file_tools import fopen
 
 class Island(object):
 
-    def __init__(self, parms, file_name, tldr, r_seed):
+    def __init__(self, parms, file_name, tldr, r_seed, island_id=0):
         """ Constructor """
 
         # Start timing the GA
         self.start_time = time.clock()
-        
+
         # Get params file name
         self.parm_values = self.set_parameters(parms, file_name)
         self.run_seed = r_seed
-        
+
         # Set up recording structures
         self.gen_best = []
         self.gen_avg = []
@@ -172,7 +173,11 @@ class Island(object):
 #             self.member[i]._reset_fitness()
 
             if (self.member[i].raw_fitness == -1):
+                # BJ: Test time...
+                t0 = time.time()
                 self.problem.do_raw_fitness(self.member[i])
+                t1 = time.time()
+#                 print(t1-t0)  # Print time fitness evaluation took
 
             self.sum_raw_fitness += self.member[i].raw_fitness
             self.sum_raw_fitness2 += self.member[i].raw_fitness * self.member[i].raw_fitness
@@ -219,9 +224,9 @@ class Island(object):
         hwrite.right(self.r, 3, self.summary_output)
         self.summary_output.write(" G ")
         hwrite.right(self.g, 3, self.summary_output)
-        hwrite.right_places(float(self.best_of_gen_chromo.raw_fitness), 7, 3, self.summary_output)
-        hwrite.right_places(self.average_raw_fitness, 11, 3, self.summary_output)
-        hwrite.right_places(self.stddev_raw_fitness, 11, 3, self.summary_output)
+        hwrite.right_places(float(self.best_of_gen_chromo.raw_fitness), 11, 4, self.summary_output)
+        hwrite.right_places(self.average_raw_fitness, 11, 4, self.summary_output)
+        hwrite.right_places(self.stddev_raw_fitness, 11, 4, self.summary_output)
         self.summary_output.write("\n")
                                        
         
@@ -351,14 +356,14 @@ class Island(object):
             print(str(self.r) + "\t" + "B" + "\t" + str(float(self.best_of_run_chromo.raw_fitness)))
             print()    
             
-			# Pickle best Chromo
+            # Pickle best Chromo
             f_name = ("../Output/Best Chromos/chromo" +
                       "-f" + str(self.best_of_gen_chromo.raw_fitness) +
                       "-p" + str(self.parm_values.pop_size) +
                       "-m" + str(self.parm_values.mutation_rate) +
                       "-x" + str(self.parm_values.xover_rate) +
                       ".p")
-            with open(f_name, "wb") as fp:
+            with fopen(f_name, "wb") as fp:
                 pickle.dump(self.best_of_gen_chromo, fp, protocol=2)
         
     def shut_down(self):
@@ -402,8 +407,6 @@ class Island(object):
         end_time = time.clock()
         print("End: " + str(end_time))
         
-        
-        
     """ ELITISM CODE """
     
         
@@ -414,25 +417,25 @@ class Island(object):
         SummaryChromo.copy_b2a(temp, self.member[i])
         SummaryChromo.copy_b2a(self.member[i], self.member[j])
         SummaryChromo.copy_b2a(self.member[j], temp)
-        
-        
+
     def get_elites(self):
         """ Copies best individuals to elites list """
 
         if self.parm_values.min_or_max == "min":
             for i in range(self.num_elites):
                 SummaryChromo.copy_b2a(self.elites[i], self.member[i])
-                
+
         elif self.parm_values.min_or_max == "max":
             for i in range(self.num_elites):
                 SummaryChromo.copy_b2a(self.elites[i], self.member[self.parm_values.pop_size-i-1])
-                
-    
+
     def insert_elites(self, do_print):
         """ Adds unaltered elites back into the population """
-        
+
         if do_print:
             print("Elites:")
+            for i in range(self.num_elites):
+                print(str(self.elites[i].raw_fitness) + " " + str(self.elites[i].fit_dict))
         
         for i in range(self.num_elites):
             SummaryChromo.copy_b2a(self.member[self.parm_values.pop_size-i-1], self.elites[i])

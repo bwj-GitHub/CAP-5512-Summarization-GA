@@ -27,11 +27,11 @@ class MMR:
         self.vectorizer = CountVectorizer(ngram_range=(1,1))
         self.bows = self.vectorizer.fit_transform(self.D)
         self.m_bow = self.bows.sum(0)
-        
+
         # Tokenize D (TODO: do this before bows?):
         for i in range(len(self.D)):
             self.D[i] = self.T.tokenize(self.D[i])
-        
+
         # Calculate relevance scores:
         self.bows = self.bows.toarray()
         for i in range(len(self.D)):

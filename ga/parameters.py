@@ -66,6 +66,7 @@ class Parameters(object):
         self.num_genes = int(param_input.readline())
         
         # gene_size
+        # TODO: Remove me?
         param_input.read(30)
         self.gene_size = int(param_input.readline())
         
